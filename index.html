@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Is the Strait of Hormuz open?</title>
+<style>
+  :root {
+    --sky: #cfe8f5;
+    --sky-2: #a8d4ea;
+    --sea: #1c6e8c;
+    --sea-2: #0f4c63;
+    --wall: #4a4a4a;
+    --ship: #b5402f;
+    --ink: #0e2a36;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--sky);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 4vh 5vw 8vh;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 7vw, 6rem);
+    line-height: 1.02;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.6em;
+    text-align: center;
+  }
+
+  .stage {
+    width: 100%;
+    display: block;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(15, 76, 99, 0.25);
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  /* ---- Result block, hidden until animation finishes ---- */
+  .result {
+    text-align: center;
+    margin-top: 6vh;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .result.show { opacity: 1; transform: translateY(0); }
+
+  .verdict {
+    font-size: clamp(2.4rem, 8vw, 6.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.2em;
+    color: #b5402f;
+  }
+
+  .stat { margin: 1.6em 0; }
+
+  .stat .label {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: clamp(0.7rem, 1.6vw, 0.95rem);
+    font-weight: 700;
+    opacity: 0.7;
+    margin-bottom: 0.25em;
+  }
+
+  .stat .value {
+    font-size: clamp(1.8rem, 5.5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 8vh;
+    font-size: 0.8rem;
+    opacity: 0.45;
+  }
+
+  /* ---------- Animation ---------- */
+  /* Ship sails in from the right, stops at the wall's near edge, then sinks straight down */
+  @keyframes sail-sink {
+    0%   { transform: translate(1370px, 0); }   /* off-screen right */
+    45%  { transform: translate(770px, 0); }    /* front touches near edge of wall */
+    54%  { transform: translate(770px, 0); }    /* brief hold */
+    100% { transform: translate(770px, 250px); }/* sinks slowly below the water */
+  }
+  /* Wall rises out of the water early, before the ship arrives */
+  @keyframes wall-rise {
+    0%   { transform: translateY(190px); }
+    100% { transform: translateY(0); }
+  }
+
+  .ship-group {
+    transform: translate(1370px, 0);
+    animation: sail-sink 5s ease-in forwards;
+  }
+  .wall-group {
+    transform: translateY(190px);
+    animation: wall-rise 1.2s ease-out forwards;
+    animation-delay: 0.3s;
+  }
+
+  /* gentle sea bobbing for the waterline highlight */
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+  .wave-hi { animation: bob 3s ease-in-out infinite; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Is the Strait of Hormuz open?</h1>
+
+    <svg class="stage" viewBox="0 0 1280 520" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Animation of a ship hitting a wall and sinking">
+      <defs>
+        <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#dff0fa"/>
+          <stop offset="1" stop-color="#a8d4ea"/>
+        </linearGradient>
+        <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2a86a6"/>
+          <stop offset="1" stop-color="#0c3c4f"/>
+        </linearGradient>
+        <!-- keep the rising wall and sinking ship from spilling out the bottom -->
+        <clipPath id="stage"><rect x="0" y="0" width="1280" height="520"/></clipPath>
+      </defs>
+
+      <g clip-path="url(#stage)">
+        <!-- Sky -->
+        <rect x="0" y="0" width="1280" height="320" fill="url(#skyG)"/>
+        <circle cx="1080" cy="90" r="44" fill="#fff3c4" opacity="0.9"/>
+
+        <!-- Deep water (solid base) -->
+        <rect x="0" y="300" width="1280" height="220" fill="url(#seaG)"/>
+
+        <!-- Wall: rises out of the water, visible both above and below the surface -->
+        <g class="wall-group">
+          <rect x="600" y="150" width="80" height="280" fill="#4a4a4a"/>
+          <rect x="600" y="150" width="80" height="16" fill="#5e5e5e"/>
+          <!-- brick/rivet lines -->
+          <rect x="600" y="190" width="80" height="3" fill="#3a3a3a"/>
+          <rect x="600" y="230" width="80" height="3" fill="#3a3a3a"/>
+          <rect x="600" y="270" width="80" height="3" fill="#3a3a3a"/>
+          <rect x="600" y="310" width="80" height="3" fill="#3a3a3a"/>
+          <rect x="600" y="350" width="80" height="3" fill="#3a3a3a"/>
+        </g>
+
+        <!-- Ship: sails in on the surface, stops at the wall, then sinks straight down -->
+        <g class="ship-group" transform="translate(0,0)">
+          <!-- hull -->
+          <path d="M -90 250 L 90 250 L 70 300 L -70 300 Z" fill="#b5402f"/>
+          <rect x="-70" y="300" width="140" height="22" fill="#8f2f22"/>
+          <!-- deck house -->
+          <rect x="-30" y="210" width="60" height="40" fill="#f2efe6"/>
+          <rect x="-18" y="220" width="14" height="14" fill="#2a86a6"/>
+          <rect x="6" y="220" width="14" height="14" fill="#2a86a6"/>
+          <!-- funnel -->
+          <rect x="36" y="206" width="20" height="44" fill="#3a3a3a"/>
+          <rect x="36" y="206" width="20" height="10" fill="#b5402f"/>
+          <!-- mast -->
+          <rect x="-2" y="160" width="5" height="56" fill="#3a3a3a"/>
+        </g>
+
+        <!-- Translucent water overlay: tints anything that has sunk below the surface -->
+        <rect x="0" y="300" width="1280" height="220" fill="url(#seaG)" opacity="0.5"/>
+        <path class="wave-hi" d="M0 304 q 80 -14 160 0 t 160 0 t 160 0 t 160 0 t 160 0 t 160 0 t 160 0 t 160 0 V 320 H0 Z"
+              fill="#ffffff" opacity="0.18"/>
+      </g>
+    </svg>
+
+    <div class="result" id="result">
+      <p class="verdict">Nope, still closed</p>
+
+      <div class="stat">
+        <div class="label">Days closed</div>
+        <div class="value" id="days">—</div>
+      </div>
+
+      <div class="stat">
+        <div class="label">Barrels of oil missing from global supply chain</div>
+        <div class="value" id="barrels">—</div>
+      </div>
+    </div>
+
+    <footer>Updates automatically &middot; closed since 28 February 2026</footer>
+  </div>
+
+  <script>
+    (function () {
+      var CLOSED_SINCE = new Date(2026, 1, 28); // Feb is month index 1
+      var MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+      var now = new Date();
+      var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var days = Math.max(0, Math.floor((today - CLOSED_SINCE) / MS_PER_DAY));
+
+      var barrelsMillions = days * 20;
+
+      function fmt(n) { return n.toLocaleString("en-US"); }
+
+      document.getElementById("days").textContent = fmt(days);
+      document.getElementById("barrels").textContent =
+        fmt(barrelsMillions) + " million";
+
+      // Reveal the result once the sinking animation (5s) has played out.
+      window.setTimeout(function () {
+        document.getElementById("result").classList.add("show");
+      }, 5200);
+    })();
+  </script>
+</body>
+</html>
